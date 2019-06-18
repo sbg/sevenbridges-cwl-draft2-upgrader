@@ -1,0 +1,19 @@
+language: python
+python:
+- 3.6
+- 3.7
+install:
+- pip install -r requirements.txt
+script:
+- python -m unittest discover
+deploy:
+  provider: pypi
+  user: sbg
+  password:
+    secure: SECURE_PASS
+  on:
+    tags: true
+    branch: master
+    distributions: sdist bdist_wheel
+    repo: sbg/sevenbridges-cwl-draft2-upgrader
+  skip_existing: true
