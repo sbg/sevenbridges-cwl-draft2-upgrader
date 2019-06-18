@@ -1,0 +1,12 @@
+setuptools==41.0.1
+sevenbridges-python==0.20.2
+humanfriendly==4.17
+termcolor==1.1.0
+typing==3.6.6
+tqdm==4.29.1
+avro_cwl==1.8.4
+cwltool==1.0.20190603140227
+jsbeautifier==1.8.9
+billiard==3.5.0.5
+ruamel.base==1.0.0
+PyYAML==3.13
