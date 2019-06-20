@@ -20,7 +20,7 @@ setup(
     name='sevenbridges-cwl-draft2-upgrader',
     version=VERSION,
     packages=find_packages(),
-    url='https://gitlab.sbgenomics.com/bix/bix-api',
+    url='https://github.com/sbg/sevenbridges-cwl-draft2-upgrader',
     platforms=['POSIX', 'MacOS'],
     python_requires='>=3.6.0',
     install_requires=install_requires,
