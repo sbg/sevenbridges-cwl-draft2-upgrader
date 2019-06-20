@@ -7,7 +7,8 @@ SevenBridges CWL Draft2 Upgrader is a Python3 package that comes with three comm
 
 Command line tool `sbg_cwl_upgrader` allows you to upgrade CWL 
 tools and workflows written in sbg:draft-2 to CWL v1.0. The source CWL can be on your local machine or on the Seven Bridges platform and the
-converted CWL can be output to your local machine or onto the Seven Bridges platform. For more details see [this section](#recommended-draft2-to-cwl10-upgrade-flow).
+converted CWL can be output to your local machine or onto the Seven Bridges platform. For more details see [this section](#recommended-draft2-to-cwl10-upgrade-flow).  
+Note that the conversion process is semi-automated, manual intervention may be required. For more details see the [known limitations section](#known-limitations).
 
 Command line tool `sbg_cwl_decomposer` installs individual components of a workflow and re-links them back in the workflow. For more details see the [usage section](#decompose-a-platform-workflow).
 
@@ -77,25 +78,25 @@ sbg_cwl_decomposer -a workflow.cwl
 
 ### Convert a Platform draft2 workflow to CWL1.0 and run it on the Seven Bridges Platform
 
-- Prepare a development project and copy the workflow there
-- Run a task in the development project with the draft2 workflow
+- Prepare a development project and copy the workflow there.
+- Run a task in the development project with the draft2 workflow.
 - Run the upgrader script with the same app ID for `-i` and `-o` parameters to create a new revision over the draft2 wf:  
-`sbg_cwl_upgrader -i <app_id> -o <app_id> -d -u`
+`sbg_cwl_upgrader -i <app_id> -o <app_id> -d -u`.
 - This will upgrade the workflow and the tools/subworkflows, and install them in the project as separate apps.
-- Rerun the task that used the draft2 workflow with the same inputs
-- Hope everything runs fine
-- If not, consult the [known limitations section](#known-limitations) and do a manual intervention.
+- Rerun the task that used the draft2 workflow with the same inputs.
+- Hope everything runs fine.
+- If not, consult the [known limitations section](#known-limitations) and do a manual intervention
 - If a tool in the workflow requires modifications, find the tool in the project, apply a fix there, and just update the tool in the workflow.
 
 ### Convert a Platform draft2 workflow to CWL1.0 and run it using cwltool
 
 - Run the upgrader script with the `-o` parameter pointing to a local file:  
-`sbg_cwl_upgrader -i <app_id> -o /path/to/app.cwl -d -v`
+`sbg_cwl_upgrader -i <app_id> -o /path/to/app.cwl -d -v`.
 - This will upgrade the workflow and the tools/subworkflows, and install them in the `steps` folder alongside the main workflow.
 - Validate JS expressions in the workflow - [check this section](#checking-javascript-version-compatibility-in-expressions).
 - Validate the workflow with `cwltool --validate /path/to/app.cwl` and check for potential errors - see the [portability notes](#portability-notes) section.
 - Prepare workflow inputs for local execution and describe them in `<name>_inputs.json` file (can be either JSON or YAML).
-- Run with cwltool using `cwltool /path/to/app.cwl <name>_inputs.json`
+- Run with cwltool using `cwltool /path/to/app.cwl <name>_inputs.json`.
 - Hope everything runs fine.
 - If not, consult the [known limitations section](#known-limitations) and do a manual intervention.
 - If a tool in the workflow requires modifications, find the tool in the `steps` folder, apply a fix there, and just rerun the workflow.
@@ -117,7 +118,7 @@ The CWL standard specifies that glob patterns must follow POSIX(3) pattern match
 - Glob pattern with brace expand syntax [not capturing outputs in cwltool](https://github.com/common-workflow-language/cwltool/issues/870), e.g. `glob: {*.txt,*.pdf}`. Using brace expand pattern (curly brackets) is a bash extension to the glob specification. This pattern will work on the Seven Bridges platform, but not with cwltool.  
 To get this glob working with all executors, break down the single string pattern into a list of string patterns, i.e. convert `glob: "{*.txt,*.pdf}"` to `glob: ["*.txt","*.pdf"]`
 - Some CWL executors require strict type matching between connected ports, e.g. a `File` object can't connect to a `File[]` input and vice versa.  
-These connection mismatches can be handled by adding a step input `valueFrom` expression to transform a `File` to `File[]` with `valueFrom: $([self])`, or transform `File[]` to `File` with `valueFrom: $(self[0])`
+These connection mismatches can be handled by adding a step input `valueFrom` expression to transform a `File` to `File[]` with `valueFrom: $([self])`, or transform `File[]` to `File` with `valueFrom: $(self[0])`.
 - Some CWL executors require Javascript expressions to be written in ES5.1 strict mode (more info [here](#note-on-javascript-versions-in-expressions)).
 
 ### Note on Javascript versions in expressions
