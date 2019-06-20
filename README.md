@@ -17,13 +17,23 @@ Command line tool `sbg_validate_js_cwl_v1` checks a CWL document for non-strict 
 ## Installation
 
 This tool requires Python3. In general, it is helpful to install user space
-Python applications in [virtual environments][venv]. 
+Python applications in [virtual environments][venv].
+
+### Install using pip 
 
 [venv]: https://packaging.python.org/guides/installing-using-pip-and-virtualenv/
 
 The package can be installed with `pip`, using
 
 ```
+python3 -m pip install sevenbridges-cwl-draft2-upgrader
+```
+
+### Install from source code
+
+Install from source by cloning the repo, using
+```
+git clone git@github.com:sbg/sevenbridges-cwl-draft2-upgrader.git
 python3 -m pip install sevenbridges-cwl-draft2-upgrader
 ```
 
