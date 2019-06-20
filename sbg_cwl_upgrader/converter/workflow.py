@@ -4,6 +4,7 @@ from multiprocessing import cpu_count
 import tqdm
 from billiard.pool import Pool
 from sbg_cwl_upgrader.cwl_utils import CWL
+from sbg_cwl_upgrader.cwl_utils import as_list
 from sbg_cwl_upgrader.converter.tool import CWLToolConverter
 
 
@@ -13,7 +14,7 @@ class CWLWorkflowConverter(CWL):
     def handle_source(source: list):
         source = deepcopy(source)
         out = []
-        for s in source:
+        for s in as_list(source):
             s = s.lstrip('#').replace('.', '/')
             out.append(s)
         return out
