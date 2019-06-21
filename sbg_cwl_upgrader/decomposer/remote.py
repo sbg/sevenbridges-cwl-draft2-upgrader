@@ -33,13 +33,14 @@ def install_or_upgrade_app(step_id: str,
     # Replace special characters in step id with -
     step_id = replace_special_characters(step_id)
 
-    try:
-        app = api.apps.get('{}/{}'.format(project_id, step_id))
+    app_query = api.apps.query(id='{}/{}'.format(project_id, step_id))
+    if len(app_query):
+        app = app_query[0]
         api.apps.create_revision(app.id,
                                  app.revision + 1,
                                  raw_json,
                                  api=api)
-    except sbg.NotFound:
+    else:
         App.install_app('{}/{}'.format(project_id, step_id), raw_json, api=api)
 
     return api.apps.get('{}/{}'.format(project_id, step_id))

@@ -141,6 +141,11 @@ class OutputBinding(CWL):
                     and 'script' in sbg_draft2['glob']):
                 self.cwl['glob'] = self.parse_js(sbg_draft2['glob']['script'])
 
+            # Handle sub-folder glob in draft2
+            if (self.cwl.get('glob', '').startswith('./')
+                    and len(self.cwl.get('glob', '')) > 2):
+                self.cwl['glob'] = self.cwl['glob'][2:]
+
             if ('outputEval' in sbg_draft2
                     and isinstance(sbg_draft2['outputEval'], dict)
                     and 'script' in sbg_draft2['outputEval']):

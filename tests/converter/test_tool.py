@@ -1,5 +1,5 @@
 from unittest import TestCase
-from sbg_cwl_upgrader.converter.tool import Input, Output
+from sbg_cwl_upgrader.converter.tool import Input, Output, OutputBinding
 
 
 class TestInput(TestCase):
@@ -196,3 +196,12 @@ class TestOutput(TestCase):
         cwl1 = Output(draft2)
         self.assertEqual(cwl1.cwl['type'], 'File?')
         self.assertNotIn('required', cwl1.cwl)
+
+
+class TestOutputBinding(TestCase):
+    def test_glob_subdirectory(self):
+        draft2 = {
+            "glob": "./a/b/c"
+        }
+        cwl1 = OutputBinding(draft2)
+        self.assertEqual(cwl1.cwl['glob'], 'a/b/c')
