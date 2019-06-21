@@ -129,6 +129,23 @@ class TestInput(TestCase):
         cwl1 = Input(draft2)
         self.assertNotIn("itemSeparator", cwl1.cwl["inputBinding"])
 
+    def test_array_with_no_separator(self):
+        draft2 = {
+            "type": [
+                {
+                    "type": "array",
+                    "items": "File"
+                }
+            ],
+            "inputBinding": {
+                "position": 0,
+                "prefix": "-v",
+                "separate": True,
+            }
+        }
+        cwl1 = Input(draft2)
+        self.assertIn("inputBinding", cwl1.cwl["type"][0])
+
     def test_optional_type(self):
         draft2 = {
             "required": False,

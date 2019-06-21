@@ -68,8 +68,8 @@ class Input(CWL):
                         del self.cwl['inputBinding']['itemSeparator']
                     # In sbg:draft2 "itemSeparator: null" meant repeat prefix.
                     # Move "prefix" and "separate" to new inputBinding for item
-                    if (not self.cwl['inputBinding'].get(
-                            'itemSeparator', True)
+                    if (self.cwl['inputBinding'].get(
+                            'itemSeparator', None) is None
                             and 'prefix' in self.cwl['inputBinding']):
                         self.cwl = self.repeat_prefix_handler()
             if 'inputBinding' in self.cwl:
@@ -111,7 +111,7 @@ class Input(CWL):
         """
         Handle case with null in itemSeparator in draft2 inputs
         """
-        del self.cwl['inputBinding']['itemSeparator']
+        self.cwl['inputBinding'].pop('itemSeparator', None)
         new_binding = {
             'prefix': self.cwl['inputBinding']['prefix']
         }
