@@ -63,7 +63,10 @@ class TestInput(TestCase):
             }
         }
         cwl1 = Input(draft2)
-        self.assertEqual(cwl1.cwl, converted)
+        self.assertEqual(cwl1.cwl["type"], converted["type"])
+        self.assertIn("valueFrom", cwl1.cwl["inputBinding"])
+        # Check that default is not added by mistake
+        self.assertNotIn("default", cwl1.cwl)
 
     def test_item_separator_false_separate_optional(self):
         draft2 = {
@@ -90,7 +93,9 @@ class TestInput(TestCase):
                 }]
         }
         cwl1 = Input(draft2)
-        self.assertEqual(cwl1.cwl, converted)
+        self.assertEqual(cwl1.cwl["type"], converted["type"])
+        self.assertIn("valueFrom", cwl1.cwl["inputBinding"])
+        self.assertNotIn("default", cwl1.cwl)
 
     def test_item_separator_without_separate(self):
         draft2 = {
@@ -114,7 +119,8 @@ class TestInput(TestCase):
         }
 
         cwl1 = Input(draft2)
-        self.assertEqual(cwl1.cwl, converted)
+        self.assertEqual(cwl1.cwl["type"], converted["type"])
+        self.assertIn("valueFrom", cwl1.cwl["inputBinding"])
 
     def test_item_separator_without_prefix(self):
         draft2 = {
@@ -180,6 +186,21 @@ class TestInput(TestCase):
         }
         cwl1 = Input(draft2, in_id="input")
         self.assertNotIn('sbg:cmdInclude', cwl1.cwl["inputBinding"])
+
+    def test_enum_name_changed(self):
+        draft2 = {
+            "id": "#foo",
+            "type": [
+                "null",
+                {
+                    "type": "enum",
+                    "symbols": ["a", "b"],
+                    "name": "null"
+                }
+            ]
+        }
+        cwl1 = Input(draft2, in_id='foo')
+        self.assertEqual(cwl1.cwl['type'][1]["name"], 'foo')
 
 
 class TestOutput(TestCase):

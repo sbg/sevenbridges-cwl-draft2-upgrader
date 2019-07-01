@@ -61,8 +61,10 @@ class CWL(object):
         :param script: Javascript expression
         """
         if script.find('return') == -1:
-            print(colored('\nNo return statement in script:\n{}'.format(
-                script), 'red'))
+            print(
+                colored('\nNo return statement in script:\n{}'.format(script),
+                        'red')
+            )
 
     def parse_js(self, script: str):
         """Convert draft2 JS objects to V1 JS objects"""

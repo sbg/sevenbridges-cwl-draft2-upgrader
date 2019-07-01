@@ -8,7 +8,8 @@ SevenBridges CWL Draft2 Upgrader is a Python3 package that comes with three comm
 Command line tool `sbg_cwl_upgrader` allows you to upgrade CWL 
 tools and workflows written in sbg:draft-2 to CWL v1.0. The source CWL can be on your local machine or on the Seven Bridges platform and the
 converted CWL can be output to your local machine or onto the Seven Bridges platform. For more details see [this section](#recommended-draft2-to-cwl10-upgrade-flow).  
-Note that the conversion process is semi-automated, manual intervention may be required. For more details see the [known limitations section](#known-limitations).
+Note that the conversion process is semi-automated, manual intervention may be required. For more details see the [known limitations section](#known-limitations).  
+Manual part of the conversion process may be tedious and require changes to the CWL code. Therefore, strong understanding of the CWL syntax is desirable.
 
 Command line tool `sbg_cwl_decomposer` installs individual components of a workflow and re-links them back in the workflow. For more details see the [usage section](#decompose-a-platform-workflow).
 
@@ -94,9 +95,9 @@ sbg_cwl_decomposer -a workflow.cwl
 `sbg_cwl_upgrader -i <app_id> -o <app_id> -d -u`.
 - This will upgrade the workflow and the tools/subworkflows, and install them in the project as separate apps.
 - Rerun the task that used the draft2 workflow with the same inputs.
-- Hope everything runs fine.
-- If not, consult the [known limitations section](#known-limitations) and do a manual intervention
-- If a tool in the workflow requires modifications, find the tool in the project, apply a fix there, and just update the tool in the workflow.
+- Debug failures. Consult the [known limitations section](#known-limitations) and do a manual intervention
+- If a tool in the workflow requires modifications, find the tool in the project, apply a fix there, and update the tool in the workflow. Good practice is to test the modified tool individually before updating in the workflow.
+- Once the CWL1.0 task completes, check if all the expected outputs are produced properly.
 
 ### Convert a Platform draft2 workflow to CWL1.0 and run it using cwltool
 
@@ -107,9 +108,9 @@ sbg_cwl_decomposer -a workflow.cwl
 - Validate the workflow with `cwltool --validate /path/to/app.cwl` and check for potential errors - see the [portability notes](#portability-notes) section.
 - Prepare workflow inputs for local execution and describe them in `<name>_inputs.json` file (can be either JSON or YAML).
 - Run with cwltool using `cwltool /path/to/app.cwl <name>_inputs.json`.
-- Hope everything runs fine.
-- If not, consult the [known limitations section](#known-limitations) and do a manual intervention.
-- If a tool in the workflow requires modifications, find the tool in the `steps` folder, apply a fix there, and just rerun the workflow.
+- Debug failures. Consult the [known limitations section](#known-limitations) and do a manual intervention.
+- If a tool in the workflow requires modifications, find the tool in the `steps` folder, apply a fix there, and rerun the workflow. Good practice is to test the modified tool individually before updating in the workflow.
+- Once the CWL1.0 task completes, check if all the expected outputs are produced properly.
 
 
 ## Known limitations
@@ -121,6 +122,7 @@ Manual intervention may be required when:
 - File in `InitialWorkdirRequirement` is created in a subfolder, e.g. `entryname: foo/bar`. Files need to be created directly in the working directory.
 - Glob is catching files outside the working directory, e.g. `glob: $(inputs.input.path)`. In CWL, every job has its own working directory in order to keep things clean. Glob should only capture files inside the working directory (meaning tools should only write outputs in the working directory).
 - JS expression is missing a `return` statement. Every expression should return something (at least `null`), and must use `return`.
+- JS expression is editing the `inputs` variable and then accessing it. The tool converts `$job.inputs` to `inputs`, so in CWL1.0 JS expressions should no longer redefine the `inputs` variable.
 - The converter is not fully tested on upgrading mixed-version workflows. 
 
 ### Portability notes
