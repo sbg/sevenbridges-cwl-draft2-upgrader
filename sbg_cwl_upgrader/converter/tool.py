@@ -61,17 +61,7 @@ class Input(CWL):
                             raise Exception(
                                 "Secondary files can be "
                                 "either instance of str or dict.")
-                if self.is_array_input(sbg_draft2):
-                    # itemSeparator must go with prefix
-                    if ('itemSeparator' in self.cwl['inputBinding']
-                            and 'prefix' not in self.cwl['inputBinding']):
-                        del self.cwl['inputBinding']['itemSeparator']
-                    # In sbg:draft2 "itemSeparator: null" meant repeat prefix.
-                    # Move "prefix" and "separate" to new inputBinding for item
-                    if (self.cwl['inputBinding'].get(
-                            'itemSeparator', None) is None
-                            and 'prefix' in self.cwl['inputBinding']):
-                        self.cwl = self.repeat_prefix_handler()
+
             if 'inputBinding' in self.cwl:
                 self.cwl['inputBinding'] = CommandLineBinding(
                         sbg_draft2=self.cwl['inputBinding']).to_dict()
@@ -87,6 +77,19 @@ class Input(CWL):
                         'if (self == 0){self = null;\ninputs.' +
                         in_id + ' = null};\n')
 
+                if self.is_array_input(sbg_draft2):
+                    # itemSeparator must go with prefix
+                    if ('itemSeparator' in self.cwl['inputBinding']
+                            and 'prefix' not in self.cwl['inputBinding']):
+                        del self.cwl['inputBinding']['itemSeparator']
+                    # In sbg:draft2 "itemSeparator: null" meant repeat prefix.
+                    # Move "prefix" and "separate" to new inputBinding for item
+                    # Try to add valueFrom as well
+                    if (self.cwl['inputBinding'].get(
+                            'itemSeparator', None) is None
+                            and 'prefix' in self.cwl['inputBinding']):
+                        self.cwl = self.repeat_prefix_handler()
+
                 if 'sbg:cmdInclude' in self.cwl['inputBinding']:
                     del self.cwl['inputBinding']['sbg:cmdInclude']
 
@@ -94,7 +97,7 @@ class Input(CWL):
                 del self.cwl['required']
 
             if 'type' in self.cwl:
-                for t in sbg_draft2['type']:
+                for t in self.cwl['type']:
                     if t != 'null' and 'fields' in t:
                         t['fields'] = [InputRecordField(x).to_dict()
                                        for x in t['fields']]
@@ -112,21 +115,43 @@ class Input(CWL):
         Handle case with null in itemSeparator in draft2 inputs
         """
         self.cwl['inputBinding'].pop('itemSeparator', None)
+        prefix = self.cwl['inputBinding']['prefix']
         new_binding = {
-            'prefix': self.cwl['inputBinding']['prefix']
+            'prefix': prefix
         }
         del self.cwl['inputBinding']['prefix']
+        separate = ' '
         if 'separate' in self.cwl['inputBinding']:
             new_binding['separate'] = self.cwl['inputBinding']['separate']
+            if self.cwl['inputBinding']['separate'] is False:
+                separate = ''
             del self.cwl['inputBinding']['separate']
-        if not self.cwl['inputBinding']:
-            del self.cwl['inputBinding']
+
+        is_file = False
         if isinstance(self.cwl['type'], list):
             for i, t in enumerate(self.cwl['type']):
                 if isinstance(t, dict):
+                    if t.get('items', "") == "File":
+                        is_file = True
                     self.cwl['type'][i]['inputBinding'] = new_binding
         elif isinstance(self.cwl['type'], dict):
+            if self.cwl['type'].get('items', "") == "File":
+                is_file = True
             self.cwl['type']['inputBinding'] = new_binding
+
+        # Add valueFrom to ensure array if possible
+        if "valueFrom" not in self.cwl["inputBinding"]:
+            item = ("[].concat(self)[i].path" if is_file
+                    else "[].concat(self)[i]")
+            self.cwl["inputBinding"]["valueFrom"] = '\n'.join([
+                "${",
+                "    var out = \"\"",
+                "    for (var i = 0; i < [].concat(self).length; i++ ){",
+                "        out += \" {}{}\" + {}".format(prefix, separate, item),
+                "    }    ",
+                "    return out",
+                "}"
+            ])
 
         return self.cwl
 
@@ -494,13 +519,20 @@ class CWLToolConverter(CWL):
         if 'description' in data:
             new_data['doc'] = data['description']
 
-        new_data['requirements'] = \
-            self._handle_requirements(
-                data['hints'] if 'hints' in data else [],
-                data['requirements'] if 'requirements' in data else [],
-                data['inputs'] if 'inputs' in data else [])
-        new_data['hints'] = self._handle_hints(
-            data['hints'] if 'hints' in data else [])
+        # Add requirements if not empty
+        new_requirements = self._handle_requirements(
+                data.get('hints', []),
+                data.get('requirements', []),
+                data.get('inputs', [])
+            )
+        if new_requirements:
+            new_data['requirements'] = new_requirements
+        # Add hints if not empty
+        new_hints = self._handle_hints(
+            data.get('hints', [])
+        )
+        if new_hints:
+            new_data['hints'] = new_hints
 
         min_inp_pos = self._get_lowest_negative_input_position(data['inputs'])
 
