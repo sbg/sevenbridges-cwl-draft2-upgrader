@@ -109,6 +109,7 @@ class TestCWLConverter(TestCase):
         'sbg_cwl_upgrader.converter.cwl_converter.CWLConverterFacade._parse'
     )
     @patch('sevenbridges.Api')
+    @patch('sevenbridges.Config', MagicMock())
     @patch('sys.stdout', MagicMock())
     @patch('sbg_cwl_upgrader.converter.cwl_converter.prompt_for_confirmation',
            MagicMock(return_value=False))
@@ -140,6 +141,7 @@ class TestCWLConverter(TestCase):
         'sbg_cwl_upgrader.converter.cwl_converter.CWLConverterFacade._parse'
     )
     @patch('sevenbridges.Api')
+    @patch('sevenbridges.Config', MagicMock())
     @patch('sys.stdout', MagicMock())
     @patch('sbg_cwl_upgrader.converter.cwl_converter.prompt_for_confirmation',
            MagicMock(return_value=True))
@@ -173,6 +175,7 @@ class TestCWLConverter(TestCase):
         'sbg_cwl_upgrader.converter.cwl_converter.CWLConverterFacade._parse'
     )
     @patch('sevenbridges.Api')
+    @patch('sevenbridges.Config', MagicMock())
     @patch('sys.stdout', MagicMock())
     @patch('sbg_cwl_upgrader.converter.cwl_converter.prompt_for_confirmation',
            MagicMock(return_value=False))
@@ -208,6 +211,7 @@ class TestCWLConverter(TestCase):
          'cwl_converter.CWLConverterFacade._load_input_cwl')
     )
     @patch('sevenbridges.Api')
+    @patch('sevenbridges.Config', MagicMock())
     @patch('sys.stdout', MagicMock())
     @patch('sbg_cwl_upgrader.converter.cwl_converter.prompt_for_confirmation',
            MagicMock(return_value=False))

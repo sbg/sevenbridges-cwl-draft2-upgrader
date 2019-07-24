@@ -91,6 +91,7 @@ class TestCWLValidatorCLI(TestCase):
         mock_validator.assert_called_with(self.tool)
 
     @patch('logging.basicConfig', MagicMock())
+    @patch('sevenbridges.Config', MagicMock())
     @patch('sevenbridges.Api')
     @patch('sbg_cwl_upgrader.validator.cwl_validation.CWLValidator.validate')
     def test_platform_validation(self, mock_validator, mock_api):
