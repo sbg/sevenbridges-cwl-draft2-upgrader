@@ -29,7 +29,7 @@ def get_endpoint(platform: str):
     elif platform == 'cavatica':
         return "https://cavatica-api.sbgenomics.com/v2"
     else:
-        raise RuntimeError('Unsupported platform')
+        raise ValueError('Unsupported platform')
 
 
 def init_api(profile='default', platform=None, dev_token=None, endpoint=None):

@@ -1,0 +1,66 @@
+{
+  "class": "Workflow",
+  "cwlVersion": "v1.0",
+  "id": "wf2",
+  "sbg:id": "a/b/wf2",
+  "steps": [
+    {
+      "id": "wf1",
+      "run": {
+        "class": "Workflow",
+        "id": "wf1",
+        "sbg:id": "a/b/wf1",
+        "cwlVersion": "v1.0",
+        "steps": [
+          {
+            "id": "1",
+            "run": {
+              "cwlVersion": "v1.0",
+              "class": "CommandLineTool",
+              "id": "1",
+              "sbg:id": "1"
+            }
+          },
+          {
+            "id": "2",
+            "run": {
+              "cwlVersion": "v1.0",
+              "class": "CommandLineTool",
+              "id": "2",
+              "sbg:id": "2"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "wf2",
+      "run": {
+        "class": "Workflow",
+        "id": "wf1",
+        "sbg:id": "a/b/wf1",
+        "cwlVersion": "v1.0",
+        "steps": [
+          {
+            "id": "1",
+            "run": {
+              "cwlVersion": "v1.0",
+              "class": "CommandLineTool",
+              "id": "1",
+              "sbg:id": "1"
+            }
+          },
+          {
+            "id": "2",
+            "run": {
+              "cwlVersion": "v1.0",
+              "class": "CommandLineTool",
+              "id": "2",
+              "sbg:id": "2"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

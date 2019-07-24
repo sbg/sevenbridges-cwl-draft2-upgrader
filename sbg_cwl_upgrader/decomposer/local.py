@@ -20,9 +20,13 @@ def safe_dump_yaml(tool_path: str, tool_json: dict):
     counter = 1
     basedir = os.path.dirname(tool_path)
     basename = os.path.basename(tool_path)
+    # Append and increment prefix while there is a conflict
     while os.path.exists(tool_path):
         tool_path = os.path.join(basedir, '_{}_{}'.format(counter, basename))
         counter += 1
+    # Ensure any missing path directories are created
+    os.makedirs(os.path.dirname(os.path.abspath(tool_path)), exist_ok=True)
+    # Dump yaml to the path
     with open(tool_path, 'w') as f:
         yaml.dump(tool_json, f, default_flow_style=False)
     return tool_path
@@ -42,7 +46,7 @@ def breakdown_wf_local(wf_path: str,
     :param nested_wf_json: None in main call, dict in recursive calls
     :param steps_dir: None in main call, path in recursive calls
     :param is_main: True in main call, False in recursive calls
-    :return: Workflow path
+    :return: (Workflow path, Installed apps dictionary)
     """
 
     msg = ("Decomposing workflow '{}' and"
@@ -93,14 +97,15 @@ def breakdown_wf_local(wf_path: str,
                     tool_path, base_dir
                 )
             elif step['run']['class'] == 'Workflow':
-                wf_json['steps'][step_id]['run'] = os.path.relpath(
-                    breakdown_wf_local(
+                nested_wf, installed_apps = breakdown_wf_local(
                         tool_path,
                         installed_apps=installed_apps,
                         nested_wf_json=step['run'],
                         is_main=False,
                         steps_dir=steps_dir
-                    ),
+                    )
+                wf_json['steps'][step_id]['run'] = os.path.relpath(
+                    nested_wf,
                     base_dir
                 )
 
@@ -116,9 +121,9 @@ def breakdown_wf_local(wf_path: str,
     else:
         wf_hash = calc_json_hash(wf_json)
         if wf_hash in installed_apps:
-            return installed_apps[wf_hash]
+            return installed_apps[wf_hash], installed_apps
         else:
             safe_dump_yaml(updated_wf_path, wf_json)
             installed_apps[wf_hash] = os.path.abspath(updated_wf_path)
 
-    return os.path.abspath(updated_wf_path)
+    return os.path.abspath(updated_wf_path), installed_apps

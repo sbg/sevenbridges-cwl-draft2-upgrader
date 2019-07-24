@@ -1,8 +1,8 @@
 import json
 import logging
 import yaml
-from humanfriendly import prompts
-from sevenbridges import App, NotFound
+from humanfriendly.prompts import prompt_for_confirmation
+from sevenbridges import NotFound
 
 from sbg_cwl_upgrader.validator.cwl_validation import CWLValidator
 from sbg_cwl_upgrader.decomposer.sbg_cwl_decomposer import (breakdown_wf_sbg,
@@ -142,7 +142,7 @@ class CWLConverterFacade:
             # Decompose workflow
             if self.data['class'] == 'Workflow':
                 if not decompose:
-                    decompose = prompts.prompt_for_confirmation(
+                    decompose = prompt_for_confirmation(
                         'Do you want to also install '
                         'all tools and subworkflows from this workflow?',
                         default=True)
@@ -162,7 +162,7 @@ class CWLConverterFacade:
             try:  # Check if app exists and create new revision
                 old_rev = self.api.apps.get(full_id, api=self.api)
                 if not update:
-                    update = prompts.prompt_for_confirmation(
+                    update = prompt_for_confirmation(
                         'Do you want to update app with id: \'' +
                         full_id + '\'' + '?', default=True)
                 if update:
@@ -176,11 +176,11 @@ class CWLConverterFacade:
                     logger.info(msg)
             except NotFound:  # Install if app does not exist
                 if not update:
-                    update = prompts.prompt_for_confirmation(
+                    update = prompt_for_confirmation(
                         'Do you want to install app with id: \'' +
                         full_id + '\'' + '?', default=True)
                 if update:
-                    App.install_app(full_id, data, api=self.api)
+                    self.api.apps.install_app(full_id, data, api=self.api)
                     msg = ("Application has just been installed.\nID: " +
                            full_id + "\nrevision: 0")
                     print(colored(msg, 'green'))
@@ -188,7 +188,7 @@ class CWLConverterFacade:
             # Decompose and install parts if it's an installed/updated workflow
             if update and data['class'] == 'Workflow':
                 if not decompose:
-                    decompose = prompts.prompt_for_confirmation(
+                    decompose = prompt_for_confirmation(
                         'Do you want to also install'
                         ' all tools and subworkflows from this workflow?',
                         default=True)

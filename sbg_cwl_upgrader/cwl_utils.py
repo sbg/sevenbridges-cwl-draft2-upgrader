@@ -1,6 +1,6 @@
 from copy import deepcopy
 import jsbeautifier
-from collections import Mapping, Sequence
+from collections.abc import Mapping, Sequence
 from termcolor import colored
 import yaml
 import os
@@ -193,7 +193,7 @@ class CWL(object):
         :return: boolean
         """
         if 'type' in sbg_draft2_input:
-            for t in sbg_draft2_input['type']:
+            for t in as_list(sbg_draft2_input['type']):
                 if isinstance(t, dict) and 'items' in t:
                     return True
         else:
@@ -285,7 +285,9 @@ def cwl_ensure_array(cwl_dict, id_key: str):
 
 
 def cwl_dict_to_list(cwl_dict: list, id_key: str):
+    """Convert dict with id_key as unique element ID to list"""
     out = []
+    cwl_dict = deepcopy(cwl_dict)
     for id_, item in cwl_dict.items():
         it = item
         it[id_key] = id_
@@ -295,7 +297,8 @@ def cwl_dict_to_list(cwl_dict: list, id_key: str):
 
 
 def cwl_list_to_dict(cwl_list: list, id_key: str):
-    """Convert list with id_key as unique element ID"""
+    """Convert list with id_key as unique element ID to dict"""
+    cwl_list = deepcopy(cwl_list)
     return {f[id_key]: remove_dict_key(f, id_key) for f in cwl_list}
 
 

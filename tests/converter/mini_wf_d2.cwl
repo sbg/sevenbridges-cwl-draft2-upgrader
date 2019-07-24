@@ -3,6 +3,7 @@
   "cwlVersion": "sbg:draft-2",
   "id": "wf1",
   "label": "wf1",
+  "description": "Get a string input. Return same string twice.",
   "$namespaces": {
     "sbg": "https://www.sevenbridges.com/"
   },
