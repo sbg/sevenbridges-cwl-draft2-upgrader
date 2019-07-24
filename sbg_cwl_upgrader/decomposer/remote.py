@@ -85,7 +85,7 @@ def breakdown_wf_sbg(wf_name: str,
     :param wf_json: Workflow JSON dict
     :param api: Sevenbridges API initialized
     :param installed_apps: dict with already installed apps
-    :return:
+    :return: (updated_wf: sevenbridges.App, installed_apps: dict)
     """
 
     msg = ("Decomposing workflow with ID '{}'"
@@ -176,7 +176,7 @@ def breakdown_wf_sbg(wf_name: str,
             elif app_raw_dict['class'] == 'Workflow':
                 logger.info('\nWorking on nested workflow ' +
                             step['id'] + ':\n')
-                new_app = breakdown_wf_sbg(
+                new_app, installed_apps = breakdown_wf_sbg(
                     step['id'].lstrip('#'),
                     project_id,
                     app_raw_dict,
@@ -207,7 +207,7 @@ def breakdown_wf_sbg(wf_name: str,
     # Try to find the nested workflow in already installed apps.
     wf_hash = calc_json_hash(wf_json)
     if wf_hash in installed_apps:
-        return installed_apps[wf_hash]
+        return installed_apps[wf_hash], installed_apps
 
     # Update the workflow with modified json linked to new tools.
     updated_wf = install_or_upgrade_app(
@@ -219,4 +219,4 @@ def breakdown_wf_sbg(wf_name: str,
     installed_apps[wf_hash] = updated_wf
 
     logger.info('\nSuccessfully updated ' + updated_wf.raw['sbg:id'] + '\n')
-    return updated_wf
+    return updated_wf, installed_apps

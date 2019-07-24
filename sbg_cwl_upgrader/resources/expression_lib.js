@@ -30,6 +30,11 @@ var inheritMetadata = function(o1, o2) {
                 }
             }
         }
+        for (var key in commonMetadata) {
+            if (!(key in example)) {
+                delete commonMetadata[key]
+            }
+        }
     }
     if (!Array.isArray(o1)) {
         o1 = setMetadata(o1, commonMetadata)

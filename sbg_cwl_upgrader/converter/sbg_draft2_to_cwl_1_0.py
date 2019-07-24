@@ -6,11 +6,7 @@ from sbg_cwl_upgrader.sbg_utils import (add_sbg_auth_to_args,
 from sbg_cwl_upgrader.converter.cwl_converter import CWLConverterFacade
 
 
-def main():
-    """
-    Entrypoint and CLI for sbg_cwl_upgrader tool.
-    """
-
+def create_arg_parser():
     parser = argparse.ArgumentParser(
         description=' This tool converts CWL draft2 applications '
                     '(workflows, command line tools) to CWL v1.0.')
@@ -21,7 +17,7 @@ def main():
     parser.add_argument('-o', '--output', required=True,
                         help='can be either cwl v1.0 file (YAML, JSON, CWL)'
                              ' path or application ID.')
-    parser.add_argument('-r', '--revision',
+    parser.add_argument('-r', '--revision', type=int,
                         help='platform application revision. default: latest')
     parser.add_argument('-v', '--validate', action='store_true',
                         help='validate JS in the converted CWL v1.0 app.')
@@ -33,8 +29,15 @@ def main():
     add_logging_to_args(parser)
     add_sbg_auth_to_args(parser)
 
-    args = parser.parse_args()
-    args = vars(args)
+    return parser
+
+
+def main(args=sys.argv[1:]):
+    """
+    Entrypoint and CLI for sbg_cwl_upgrader tool.
+    """
+
+    args = vars(create_arg_parser().parse_args(args))
 
     configure_logging(args)
 

@@ -9,10 +9,8 @@ from sbg_cwl_upgrader.decomposer.remote import breakdown_wf_sbg
 from sevenbridges.errors import NotFound, Unauthorized
 
 
-def main():
-    """
-    Entrypoint and CLI for sbg_cwl_decomposer tool.
-    """
+def create_arg_parser():
+
     parser = argparse.ArgumentParser(
         description='Installs all apps from the workflow in the '
                     'current project and links the workflow to those apps')
@@ -23,9 +21,15 @@ def main():
 
     add_logging_to_args(parser)
     add_sbg_auth_to_args(parser)
+    return parser
 
-    args = parser.parse_args()
-    args = vars(args)
+
+def main(args=sys.argv[1:]):
+    """
+    Entrypoint and CLI for sbg_cwl_decomposer tool.
+    """
+
+    args = vars(create_arg_parser().parse_args(args))
 
     configure_logging(args)
 
@@ -54,4 +58,4 @@ def main():
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))

@@ -116,6 +116,10 @@ class CWLWorkflowConverter(CWL):
                 return CWLToolConverter().convert_dict(data)
             elif data['class'] == 'Workflow':
                 return CWLWorkflowConverter().convert_dict(data)
+            else:
+                raise ValueError(
+                    'Invalid cwl class in step {}.'.format(step_id)
+                )
         else:
             raise ValueError('Invalid cwl class in step {}.'.format(step_id))
 
