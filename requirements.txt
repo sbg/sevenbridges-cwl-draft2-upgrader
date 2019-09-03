@@ -9,4 +9,4 @@ cwltool==1.0.20190603140227
 jsbeautifier==1.8.9
 billiard==3.5.0.5
 ruamel.base==1.0.0
-PyYAML==3.13
+PyYAML==5.1.2
