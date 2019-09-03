@@ -10,7 +10,7 @@ deploy:
   provider: pypi
   user: sbg
   password:
-    secure: SECURE_PASS
+    secure: G+mCbnIMf9vtRuXJvWZXHauUMgBqeoriBUH9pi0FQqLzEOw85b/lilql82JxS/Fw56SixIz7YDrkzyqaPV57kSn3qRXf4KVkK19RRbJuPrAo/KvnNDY7Euw/VwwyLEgkU4Ulhmmk3FdfYQ2P7NDr+CACQofuL4NkLli9NKrN+QXMBXtMm47CNLw9NJlAaRPz6xqYTbppP3cPizG3TJGtEG/XDYk/iawgrxJY6XL/nzUDEGl6G+6755SLA8E9wwvyDOPh3o5NM3D1DnG11U/bju1iC3IGXgXKIeEPM8JxLgT5k5qPL21waBwoGLaI5niQTgEAMqx6kr7fWgLl+6MU2aLEw6FBya0XUYvep+R4Va+tQIFp0D4pKC6M39Whaw7LmEjzbegPUSI50H05oH0te//iQuP4sbhxyXn3x5KhErPb6JaduTXzzn/muMjNYOheouD3n6JbNOkTGVEQEdov4vind9Qz/FzAV6ac6P/+GsWfER5uZw4Llp0Q3ZQ/Jzjgtu39cHXVJkN4VOQ9MZ3V0StEm3ejmqhYJ6WjEtqr8lzkXJ25t/Itdl5eyyqEzV2EYCvThFyEjIiWT7mHM6WblrbaKa3+5y8Mp3RlnmbZMO/FgWYZMUbzb8Q8IFdnKnIcFeffEDznqPvd95SW/hfqYHUolHumH4zw4XoqZRLAo10=
   on:
     tags: true
     branch: master
