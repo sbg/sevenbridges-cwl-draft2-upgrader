@@ -133,6 +133,9 @@ class CWLWorkflowConverter(CWL):
 
     def convert_dict(self, data: dict) -> dict:
         v1_0_data = deepcopy(data)
+        if 'sbg:draft-2' != v1_0_data.get('cwlVersion'):
+            return v1_0_data
+
         v1_0_data['cwlVersion'] = 'v1.0'
         v1_0_data['sbg:appVersion'] = [v1_0_data['cwlVersion']]
         v1_0_data['inputs'] = self.handle_inputs(v1_0_data['inputs'])
