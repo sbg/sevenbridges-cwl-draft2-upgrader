@@ -17,10 +17,15 @@ from sbg_cwl_upgrader.converter.tool import CWLToolConverter
 
 logger = logging.getLogger(__name__)
 
+try:
+    from yaml import CLoader as Loader, CDumper as Dumper
+except ImportError:
+    from yaml import Loader, Dumper
+
 
 def dict_to_yaml(data: dict, out_path: str):
     with open(out_path, 'w') as outfile:
-        yaml.dump(data, outfile)
+        yaml.dump(data, outfile, Dumper=Dumper)
 
 
 def dict_to_json(data: dict, out_path: str):
@@ -207,7 +212,7 @@ class CWLConverterFacade:
             if os.path.exists(self.input_):
                 with open(self.input_, 'r') as f:
                     if self.input_.endswith(tuple(yaml_ext())):
-                        raw = yaml.load(f)
+                        raw = yaml.load(f, Loader=Loader)
                     else:
                         raw = json.load(f)
             else:
