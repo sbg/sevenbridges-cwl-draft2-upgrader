@@ -1,3 +1,4 @@
+
 var setMetadata = function(file, metadata) {
     if (!('metadata' in file)) {
         file['metadata'] = {}
@@ -7,7 +8,6 @@ var setMetadata = function(file, metadata) {
     }
     return file
 };
-
 var inheritMetadata = function(o1, o2) {
     var commonMetadata = {};
     if (!o2) {
@@ -35,15 +35,9 @@ var inheritMetadata = function(o1, o2) {
     }
     if (!Array.isArray(o1)) {
         o1 = setMetadata(o1, commonMetadata)
-        if (o1.secondaryFiles) {
-            o1.secondaryFiles = inheritMetadata(o1.secondaryFiles, o2)
-        }
     } else {
         for (var i = 0; i < o1.length; i++) {
             o1[i] = setMetadata(o1[i], commonMetadata)
-            if (o1[i].secondaryFiles) {
-                o1[i].secondaryFiles = inheritMetadata(o1[i].secondaryFiles, o2)
-            }
         }
     }
     return o1;
