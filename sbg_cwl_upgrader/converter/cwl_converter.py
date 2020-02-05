@@ -72,7 +72,8 @@ class CWLConverterFacade:
                                 dev_token=token, endpoint=endpoint)
             self.username = self.api.users.me().username
 
-        self.app_revision = int(app_revision) if app_revision else None
+        self.app_revision = int(app_revision) \
+            if app_revision is not None else None
 
         # Perform conversion
         self.data = self._parse(self._load_input_cwl())

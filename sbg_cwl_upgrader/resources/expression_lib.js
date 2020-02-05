@@ -1,3 +1,4 @@
+
 var setMetadata = function(file, metadata) {
     if (!('metadata' in file)) {
         file['metadata'] = {}
@@ -7,7 +8,6 @@ var setMetadata = function(file, metadata) {
     }
     return file
 };
-
 var inheritMetadata = function(o1, o2) {
     var commonMetadata = {};
     if (!o2) {
