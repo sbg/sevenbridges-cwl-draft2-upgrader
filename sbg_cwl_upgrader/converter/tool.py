@@ -411,7 +411,7 @@ class CWLToolConverter(CWL):
                 if re.match(r'[^A-Za-z0-9]+', x):
                     break
                 else:
-                    out.append(x)
+                    out += x.split()
             else:
                 raise Exception("Base command type can be either"
                                 " array of Strings or Expressions.")
