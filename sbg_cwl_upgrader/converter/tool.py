@@ -264,7 +264,12 @@ class CWLToolConverter(CWL):
         out = []
         for i in draft2_inputs:
             if 'sbg:stageInput' in i and i['sbg:stageInput']:
-                out.append("$(inputs." + str(i['id']).lstrip('#') + ")")
+                out.append(
+                    {
+                        "entry": "$(inputs." + str(i['id']).lstrip('#') + ")",
+                        "writable": i['sbg:stageInput'] == 'copy'
+                    }
+                )
         return out
 
     @staticmethod

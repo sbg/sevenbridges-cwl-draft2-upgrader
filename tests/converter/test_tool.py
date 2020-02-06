@@ -484,7 +484,8 @@ class TestCWLToolConverter(TestCase):
             }
         ]
         cwl1 = self.tool_converter._stage_inputs(draft2)
-        self.assertIn("$(inputs.foo)", cwl1)
+        self.assertEqual("$(inputs.foo)", cwl1[0]["entry"])
+        self.assertTrue(cwl1[0]["writable"])
         self.assertNotIn("$(inputs.bar)", cwl1)
 
     def test_input_position_shift_with_offset(self):
