@@ -7,9 +7,11 @@ from sevenbridges import NotFound
 from sbg_cwl_upgrader.validator.cwl_validation import CWLValidator
 from sbg_cwl_upgrader.decomposer.sbg_cwl_decomposer import (breakdown_wf_sbg,
                                                             breakdown_wf_local)
+from sbg_cwl_upgrader.converter.lib import fix_glob_with_brace
 from sbg_cwl_upgrader.cwl_utils import (yaml_ext, json_ext,
                                         is_local, add_revision_note)
 from sbg_cwl_upgrader.sbg_utils import init_api
+
 import os
 from termcolor import colored
 from sbg_cwl_upgrader.converter.workflow import CWLWorkflowConverter
@@ -77,6 +79,9 @@ class CWLConverterFacade:
 
         # Perform conversion
         self.data = self._parse(self._load_input_cwl())
+
+        # Handle globs with braces
+        self.data = fix_glob_with_brace(self.data)
 
         # region remove batch
         # Remove batch information from cwl1 version
