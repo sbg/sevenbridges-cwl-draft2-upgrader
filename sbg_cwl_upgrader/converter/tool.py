@@ -496,7 +496,7 @@ class CWLToolConverter(CWL):
         """Main method for converting draft2 tool to CWL1.0"""
 
         # Just reuse if tool is already CWLv1.0
-        if data['cwlVersion'] == 'v1.0':
+        if data.get('cwlVersion') != 'sbg:draft-2':
             return data
 
         new_data = {k: deepcopy(v)
