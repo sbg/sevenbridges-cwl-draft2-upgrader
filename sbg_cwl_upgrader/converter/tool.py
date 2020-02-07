@@ -171,6 +171,10 @@ class OutputBinding(CWL):
                     and len(self.cwl.get('glob', '')) > 2):
                 self.cwl['glob'] = self.cwl['glob'][2:]
 
+            # Handle brace expand in glob
+            if isinstance(self.cwl.get('glob', None), str):
+                self.cwl['glob'] = self.handle_glob_brace(self.cwl.get('glob'))
+
             if ('outputEval' in sbg_draft2
                     and isinstance(sbg_draft2['outputEval'], dict)
                     and 'script' in sbg_draft2['outputEval']):

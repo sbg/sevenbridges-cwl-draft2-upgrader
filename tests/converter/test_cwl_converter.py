@@ -100,8 +100,8 @@ class TestCWLConverter(TestCase):
     @patch('sys.stdout', new_callable=io.StringIO)
     def test_base_command_with_spaces(self, mock_stdout):
         """
-        baseCommand with spaces should be split into indiviudal components and run
-        corectly on Cwltool.
+        baseCommand with spaces should be split into indiviudal components
+        and run corectly on cwltool.
         :return:
         """
 
@@ -125,37 +125,6 @@ class TestCWLConverter(TestCase):
 
         self.assertEqual(process.returncode, 0)
         self.assertIn("A test string", str(stdout))
-        self.assertIn("Converting done.", mock_stdout.getvalue())
-
-    @patch('sys.stdout', new_callable=io.StringIO)
-    def test_glob_with_braces(self, mock_stdout):
-        """
-        baseCommand with spaces should be split into indiviudal components and run
-        corectly on Cwltool.
-        :return:
-        """
-
-        v1_file = os.path.join(
-            os.path.dirname(__file__),
-            'mini_tool_cwl1_{}.json'.format(
-                ''.join(random.sample(string.ascii_lowercase, 3))
-            )
-        )
-        d2_file = os.path.join(os.path.dirname(__file__),
-                               'tool_glob_with_braces_d2.cwl')
-        CWLConverterFacade(d2_file,
-                           output=v1_file)
-
-        process = subprocess.Popen(
-            [sys.executable, "-m", "cwltool", v1_file],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-        stdout, _ = process.communicate()
-        os.remove(v1_file)
-
-        self.assertEqual(process.returncode, 0)
-        passed = ("BatchText" in str(stdout)) or ("TextBatch" in str(stdout))
-        self.assertTrue(passed)
         self.assertIn("Converting done.", mock_stdout.getvalue())
 
     @patch('sys.stdout', MagicMock())
