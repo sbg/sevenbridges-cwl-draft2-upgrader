@@ -2,10 +2,16 @@ from unittest import TestCase
 from unittest.mock import patch
 import io
 import sbg_cwl_upgrader
+from sbg_cwl_upgrader.converter.cwl_converter import CWLConverterFacade
 from sbg_cwl_upgrader.converter.tool import (Input, Output, Expression,
                                              CommandLineBinding,
                                              CWLToolConverter,
                                              OutputBinding, InputRecordField)
+import random
+import subprocess
+import string
+import os
+import sys
 
 
 class TestInput(TestCase):
@@ -302,6 +308,37 @@ class TestOutputBinding(TestCase):
         cwl1 = OutputBinding(draft2)
         self.assertEqual(cwl1.cwl['glob'], 'a/b/c')
 
+    @patch('sys.stdout', new_callable=io.StringIO)
+    def test_glob_with_braces(self, mock_stdout):
+        """
+        glob with brace expand should be split into indiviudal components
+        and run corectly on cwltool.
+        :return:
+        """
+
+        v1_file = os.path.join(
+            os.path.dirname(__file__),
+            'mini_tool_cwl1_{}.json'.format(
+                ''.join(random.sample(string.ascii_lowercase, 3))
+            )
+        )
+        d2_file = os.path.join(os.path.dirname(__file__),
+                               'tool_glob_with_braces_d2.cwl')
+        CWLConverterFacade(d2_file,
+                           output=v1_file)
+
+        process = subprocess.Popen(
+            [sys.executable, "-m", "cwltool", v1_file],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        stdout, _ = process.communicate()
+        os.remove(v1_file)
+
+        self.assertEqual(process.returncode, 0)
+        passed = ("BatchText" in str(stdout)) or ("TextBatch" in str(stdout))
+        self.assertTrue(passed)
+        self.assertIn("Converting done.", mock_stdout.getvalue())
+
     def test_glob_expression(self):
         draft2 = {
             "glob": {
@@ -513,7 +550,10 @@ class TestCWLToolConverter(TestCase):
             }
         ]
 
-        cwl1 = self.tool_converter._handle_inputs(draft2, range(100), 30, -3)
+        cwl1 = self.tool_converter._handle_inputs(draft2,
+                                                  list(range(100)),
+                                                  30,
+                                                  -3)
         # should be 5 + 100 - 30 - (-3) = 78
         self.assertEqual(cwl1['foo']['inputBinding']['position'], 78)
         # should be -3 + 100 - 30 - (-3) = 70

@@ -10,6 +10,7 @@ from sbg_cwl_upgrader.decomposer.sbg_cwl_decomposer import (breakdown_wf_sbg,
 from sbg_cwl_upgrader.cwl_utils import (yaml_ext, json_ext,
                                         is_local, add_revision_note)
 from sbg_cwl_upgrader.sbg_utils import init_api
+
 import os
 from termcolor import colored
 from sbg_cwl_upgrader.converter.workflow import CWLWorkflowConverter

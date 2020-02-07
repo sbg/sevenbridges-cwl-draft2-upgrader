@@ -152,6 +152,12 @@ class CWL(object):
             return None
 
     @staticmethod
+    def handle_glob_brace(glob):
+        if glob.startswith('{') and glob.endswith('}'):
+            return [_s.strip() for _s in glob[1:-1].split(",")]
+        return glob
+
+    @staticmethod
     def wrap_expression(code: str):
         return jsbeautifier.beautify('${\n' + code + '\n}').replace('$ {',
                                                                     '${')

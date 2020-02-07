@@ -100,8 +100,8 @@ class TestCWLConverter(TestCase):
     @patch('sys.stdout', new_callable=io.StringIO)
     def test_base_command_with_spaces(self, mock_stdout):
         """
-        baseCommand with spaces should be split into indiviudal components and run
-        corectly on Cwltool.
+        baseCommand with spaces should be split into indiviudal components
+        and run corectly on cwltool.
         :return:
         """
 
