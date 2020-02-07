@@ -660,6 +660,36 @@ class TestCWLToolConverter(TestCase):
         self.assertListEqual(sorted(expected_requirements),
                              sorted([req["class"] for req in cwl1]))
 
+
+    def test_dockerImageID_removed(self):
+        """
+        Test if dockerImageID is removed upon conversion
+        :return:
+        """
+        draft2_hints = [
+            {
+                "class": "DockerRequirement",
+                "dockerPull": "ubuntu",
+                "dockerImageID": "foo"
+            }
+        ]
+        cwl1_expected = [
+            {
+                "class": "DockerRequirement",
+                "dockerPull": "ubuntu"
+            }
+        ]
+        cwl1 = self.tool_converter._handle_requirements(
+            draft2_hints,
+            [],
+            []
+        )
+        for req in cwl1:
+            if req.get('class') == 'DockerRequirement':
+                cwl1_req = req
+
+        self.assertDictEqual(cwl1_req, cwl1_expected[0])
+
     @patch('sys.stdout', new_callable=io.StringIO)
     def test_create_file_requirement(self, mock_stdout):
         """
