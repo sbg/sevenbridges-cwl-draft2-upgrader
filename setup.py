@@ -4,7 +4,7 @@ import os
 
 
 NAME = 'sbg_cwl_upgrader'
-VERSION = '0.1.1'
+VERSION = '0.1.2'
 DIR = os.path.abspath(os.path.dirname(__file__))
 NOW = datetime.utcnow()
 
