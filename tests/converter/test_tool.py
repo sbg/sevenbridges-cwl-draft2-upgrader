@@ -660,17 +660,16 @@ class TestCWLToolConverter(TestCase):
         self.assertListEqual(sorted(expected_requirements),
                              sorted([req["class"] for req in cwl1]))
 
-
-    def test_dockerImageID_removed(self):
+    def test_dockerImageId_removed(self):
         """
-        Test if dockerImageID is removed upon conversion
+        Test if dockerImageId is removed upon conversion
         :return:
         """
         draft2_hints = [
             {
                 "class": "DockerRequirement",
                 "dockerPull": "ubuntu",
-                "dockerImageID": "foo"
+                "dockerImageId": "foo"
             }
         ]
         cwl1_expected = [

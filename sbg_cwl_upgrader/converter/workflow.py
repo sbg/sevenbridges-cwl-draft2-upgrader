@@ -6,6 +6,7 @@ from billiard.pool import Pool
 from sbg_cwl_upgrader.cwl_utils import CWL
 from sbg_cwl_upgrader.cwl_utils import as_list
 from sbg_cwl_upgrader.converter.tool import CWLToolConverter
+from sbg_cwl_upgrader.converter.connection_checker import ConnectionChecker
 
 
 class CWLWorkflowConverter(CWL):
@@ -20,23 +21,29 @@ class CWLWorkflowConverter(CWL):
         return out
 
     def handle_input(self, draft2_input):
-        draft2_input = deepcopy(draft2_input)
+        v1_input = deepcopy(draft2_input)
 
-        if 'id' in draft2_input:
-            draft2_input['id'] = self.handle_id(draft2_input['id'])
+        if 'id' in v1_input:
+            v1_input['id'] = self.handle_id(v1_input['id'])
         # if 'sbg:fileTypes' in input:
             # input['format'] = input['sbg:fileTypes']
             # del input['sbg:fileTypes']
-        if 'required' in draft2_input:
-            del draft2_input['required']
-        if 'description' in draft2_input:
-            draft2_input['doc'] = deepcopy(draft2_input['description'])
-            del draft2_input['description']
-        if 'type' in draft2_input:
-            draft2_input['type'] = self.shorten_type(draft2_input['type'])
-        if 'source' in draft2_input:
-            draft2_input['source'] = self.handle_source(draft2_input['source'])
-        return draft2_input
+        if 'required' in v1_input:
+            del v1_input['required']
+        if 'description' in v1_input:
+            v1_input['doc'] = deepcopy(v1_input['description'])
+            del v1_input['description']
+        if 'type' in v1_input:
+            v1_input['type'] = self.shorten_type(v1_input['type'])
+        if 'source' in v1_input:
+            v1_input['source'] = self.handle_source(v1_input['source'])
+        # Legacy editor added useless valueFrom on wf inputs at some point
+        if 'inputBinding' in v1_input:
+            if 'valueFrom' in v1_input['inputBinding']:
+                del v1_input['inputBinding']['valueFrom']
+                if not v1_input['inputBinding']:
+                    del v1_input['inputBinding']
+        return v1_input
 
     def handle_inputs(self, inputs):
         result = []
@@ -132,7 +139,8 @@ class CWLWorkflowConverter(CWL):
                 {'class': 'StepInputExpressionRequirement'}]
 
     def convert_dict(self, data: dict) -> dict:
-        v1_0_data = deepcopy(data)
+        v1_0_data = {k: deepcopy(v) for k, v in data.items()
+                     if k not in ['x', 'y', 'appUrl']}
         if v1_0_data.get('cwlVersion') != 'sbg:draft-2':
 
             return v1_0_data
@@ -150,6 +158,9 @@ class CWLWorkflowConverter(CWL):
             del o['source']
         if 'steps' in v1_0_data and isinstance(v1_0_data['steps'], list):
             v1_0_data['steps'] = self.handle_steps(v1_0_data['steps'])
+        connection_checker = ConnectionChecker()
+        v1_0_data = connection_checker.fix_terminal_output_types(v1_0_data)
+        v1_0_data = connection_checker.fix_connection_matching(v1_0_data)
         return v1_0_data
 
 

@@ -335,8 +335,8 @@ class CWLToolConverter(CWL):
             if isinstance(hint, dict) and 'class' in hint.keys():
                 # DockerRequirement
                 if hint['class'] == 'DockerRequirement':
-                    if 'dockerImageID' in hint:
-                        del hint['dockerImageID']
+                    if 'dockerImageId' in hint:
+                        del hint['dockerImageId']
                     new_requirements.append(deepcopy(hint))
                 # ResourceRequirement
                 elif ((hint['class'] == 'sbg:CPURequirement')
