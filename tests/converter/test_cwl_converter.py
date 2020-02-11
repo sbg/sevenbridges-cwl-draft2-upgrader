@@ -18,6 +18,7 @@ def mock_app_get_not_found(_, api=None):
 
 class TestCWLConverter(TestCase):
     @patch('sys.stderr', MagicMock())
+    @patch('sys.stdout', MagicMock())
     def test_all_steps(self):
         """
         Test a full conversion for a complex draft2 workflow.
