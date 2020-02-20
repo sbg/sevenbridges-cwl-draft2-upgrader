@@ -1,5 +1,6 @@
 import os
-import yaml
+from ruamel.yaml import YAML
+from ruamel.yaml.scalarstring import walk_tree
 import logging
 from termcolor import colored
 
@@ -27,8 +28,10 @@ def safe_dump_yaml(tool_path: str, tool_json: dict):
     # Ensure any missing path directories are created
     os.makedirs(os.path.dirname(os.path.abspath(tool_path)), exist_ok=True)
     # Dump yaml to the path
+    y = YAML()
+    walk_tree(tool_json)
     with open(tool_path, 'w') as f:
-        yaml.dump(tool_json, f, default_flow_style=False)
+        y.dump(tool_json, f)
     return tool_path
 
 
@@ -110,8 +113,11 @@ def breakdown_wf_local(wf_path: str,
                 )
 
     if is_main:
+        y = YAML()
+
         with open(updated_wf_path, 'w') as f:
-            yaml.dump(wf_json, f, default_flow_style=False)
+            walk_tree(wf_json)
+            y.dump(wf_json, f)
         msg = ("Rewiring done. "
                "New tools are now connected"
                " in the workflow {}.").format(

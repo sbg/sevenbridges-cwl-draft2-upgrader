@@ -1,4 +1,4 @@
-import yaml
+from ruamel.yaml import YAML
 import os.path
 import sys
 import argparse
@@ -40,8 +40,9 @@ def main(args=sys.argv[1:]):
             raise FileNotFoundError("Can\'t locate file: \"" +
                                     input_cwl + "\". Check --input argument.")
         else:
+            y = YAML(typ='safe')
             with open(input_cwl) as tool_json_file:
-                cwl_code = yaml.safe_load(tool_json_file)
+                cwl_code = y.load(tool_json_file)
     else:
         api = init_api(profile=args['profile'], platform=args['platform'],
                        dev_token=args['token'], endpoint=args['endpoint'])

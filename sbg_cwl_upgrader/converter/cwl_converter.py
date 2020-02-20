@@ -1,6 +1,8 @@
+from copy import deepcopy
 import json
 import logging
-import yaml
+from ruamel.yaml import YAML
+from ruamel.yaml.scalarstring import walk_tree
 from humanfriendly.prompts import prompt_for_confirmation
 from sevenbridges import NotFound
 
@@ -16,17 +18,15 @@ from termcolor import colored
 from sbg_cwl_upgrader.converter.workflow import CWLWorkflowConverter
 from sbg_cwl_upgrader.converter.tool import CWLToolConverter
 
-try:
-    from yaml import CLoader as Loader, CDumper as Dumper
-except ImportError:
-    from yaml import Loader, Dumper
-
 logger = logging.getLogger(__name__)
 
 
 def dict_to_yaml(data: dict, out_path: str):
+    y = YAML()
+    data = deepcopy(data)
+    walk_tree(data)
     with open(out_path, 'w') as outfile:
-        yaml.dump(data, outfile, Dumper=Dumper)
+        y.dump(data, outfile)
 
 
 def dict_to_json(data: dict, out_path: str):
@@ -214,7 +214,8 @@ class CWLConverterFacade:
             if os.path.exists(self.input_):
                 with open(self.input_, 'r') as f:
                     if self.input_.endswith(tuple(yaml_ext())):
-                        raw = yaml.load(f, Loader=Loader)
+                        y = YAML()
+                        raw = y.load(f)
                     else:
                         raw = json.load(f)
             else:
