@@ -4,7 +4,7 @@ import sevenbridges
 from sbg_cwl_upgrader.validator.cwl_validation import CWLValidator
 import warnings
 import os
-import yaml
+import ruamel.yaml
 from sbg_cwl_upgrader.validator.sbg_validate_js_cwl_v1 import main
 
 
@@ -69,7 +69,7 @@ class TestCWLValidatorCLI(TestCase):
                                      'minimal-tool.cwl')
 
         with open(cls.test_file) as f:
-            cls.tool = yaml.safe_load(f)
+            cls.tool = ruamel.yaml.safe_load(f)
 
     @patch('logging.basicConfig', MagicMock())
     @patch('sbg_cwl_upgrader.validator.cwl_validation.CWLValidator',
@@ -115,7 +115,7 @@ class TestCWLValidatorValidate(TestCase):
                                      'minimal-tool.cwl')
 
         with open(cls.test_file) as f:
-            cls.tool = yaml.safe_load(f)
+            cls.tool = ruamel.yaml.safe_load(f)
 
         cls.wf = {
             "class": "Workflow",
