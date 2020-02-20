@@ -34,7 +34,7 @@ python3 -m pip install sevenbridges-cwl-draft2-upgrader
 
 Install from source by cloning the repo, using
 ```
-git clone git@github.com:sbg/sevenbridges-cwl-draft2-upgrader.git
+git clone https://github.com/sbg/sevenbridges-cwl-draft2-upgrader.git
 python3 -m pip install ./sevenbridges-cwl-draft2-upgrader
 ```
 
