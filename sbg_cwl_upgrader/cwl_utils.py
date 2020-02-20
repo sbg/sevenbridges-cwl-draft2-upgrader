@@ -2,7 +2,7 @@ from copy import deepcopy
 import jsbeautifier
 from collections.abc import Mapping, Sequence
 from termcolor import colored
-import yaml
+import ruamel.yaml
 import os
 import re
 import hashlib
@@ -248,7 +248,7 @@ def resolve_cwl(cwl_app_path: str):
     """
     base_dir = os.path.dirname(os.path.abspath(cwl_app_path))
     with open(cwl_app_path, 'r') as f:
-        cwl_dict = yaml.safe_load(f)
+        cwl_dict = ruamel.yaml.safe_load(f)
     if cwl_dict['class'] in ['CommandLineTool', 'ExpressionTool']:
         return cwl_dict
     elif cwl_dict['class'] == 'Workflow':
