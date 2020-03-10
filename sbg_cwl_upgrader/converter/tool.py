@@ -66,17 +66,6 @@ class Input(CWL):
                 self.cwl['inputBinding'] = CommandLineBinding(
                         sbg_draft2=self.cwl['inputBinding']).to_dict()
 
-                # Place a "default: 0" field
-                # for non-file inputs with valueFrom,
-                # then convert to null
-                if ('valueFrom' in self.cwl['inputBinding']
-                        and not self.is_file_input(sbg_draft2) and in_id):
-                    self.cwl['default'] = 0
-                    self.cwl['inputBinding']['valueFrom'] = self.prepend_js(
-                        self.cwl['inputBinding']['valueFrom'],
-                        'if (self == 0){self = null;\ninputs.' +
-                        in_id + ' = null};\n')
-
                 if self.is_array_input(sbg_draft2):
                     # itemSeparator must go with prefix
                     if ('itemSeparator' in self.cwl['inputBinding']
@@ -468,6 +457,31 @@ class CWLToolConverter(CWL):
                                 " String or Expression.")
         return out
 
+    def _handle_valuefrom_optional_inputs(self, cwl):
+        """
+        Move inputBinding with valueFrom for optional inputs
+        :param cwl: CWL dict
+        :return: CWL dict
+        """
+        for in_id, inp in cwl['inputs'].items():
+            # In sbg:draft-2 valueFrom was always evaluated
+            # In CWL v1 valueFrom is not evaluated if self is null
+            # Move the valueFrom for optional inputs to arguments
+            if ('valueFrom' in inp.get('inputBinding', {})
+                    and not self.is_required_type(inp['type'])
+                    and "loadContents" not in inp.get('inputBinding', {})):
+                new_arg = deepcopy(inp['inputBinding'])
+                if isinstance(new_arg['valueFrom'], str):
+                    new_arg['valueFrom'] = new_arg['valueFrom'].replace(
+                        "self", "inputs.{}".format(in_id)
+                    )
+                if 'arguments' in cwl:
+                    cwl['arguments'].append(new_arg)
+                else:
+                    cwl['arguments'] = [new_arg]
+                del cwl['inputs'][in_id]['inputBinding']
+        return cwl
+
     @staticmethod
     def _handle_stream(stream):
         if isinstance(stream, str):
@@ -564,6 +578,8 @@ class CWLToolConverter(CWL):
                 data['baseCommand'] if 'baseCommand' in data else [],
                 offset=offset,
                 min_inp_pos=min_inp_pos)
+
+        new_data = self._handle_valuefrom_optional_inputs(new_data)
 
         data['outputs'] = self._cleanup_invalid_inherit_metadata(
             data['inputs'], data['outputs'])

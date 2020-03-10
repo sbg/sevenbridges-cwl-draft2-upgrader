@@ -227,21 +227,6 @@ class TestInput(TestCase):
         self.assertEqual(cwl1.cwl['inputBinding']['position'], 1)
         self.assertNotIn('required', cwl1.cwl)
 
-    def test_valueFrom_adding_default_0(self):
-        draft2 = {
-            "type": [
-              "string", "null"
-            ],
-            "inputBinding": {
-                "valueFrom": "{return a}"
-            }
-        }
-        cwl1 = Input(draft2, in_id="input")
-        self.assertEqual(cwl1.cwl['default'], 0)
-        self.assertIn('self = null', cwl1.cwl["inputBinding"]['valueFrom'])
-        self.assertIn('inputs.input = null',
-                      cwl1.cwl["inputBinding"]['valueFrom'])
-
     def test_delete_cmd_include(self):
         draft2 = {
             "inputBinding": {
@@ -781,6 +766,44 @@ class TestCWLToolConverter(TestCase):
         cwl1 = self.tool_converter._handle_arguments(args, basecommand,
                                                      offset=1)
         self.assertEqual(len(cwl1), 4)
+
+    def test_optional_value_from(self):
+        """
+        Test base command items are added to arguments
+        :return:
+        """
+        cwl1 = {
+            "inputs": {
+                "in1": {
+                    "type": "File",
+                    "inputBinding": {
+                        "position": 1,
+                        "valueFrom": 1
+                    }
+                },
+                "in2": {
+                    "type": "File?",
+                    "inputBinding": {
+                        "position": 2,
+                        "valueFrom": 2
+                    }
+                },
+                "in3": {
+                    "type": ["null", "File"],
+                    "inputBinding": {
+                        "position": 3,
+                        "valueFrom": "${ return self}"
+                    }
+                }
+            }
+        }
+        cwl1 = self.tool_converter._handle_valuefrom_optional_inputs(cwl1)
+        self.assertIn("in1", cwl1["inputs"])
+        self.assertEqual(len(cwl1["arguments"]), 2)
+        self.assertNotIn("inputBinding", cwl1["inputs"]["in2"])
+        self.assertNotIn("inputBinding", cwl1["inputs"]["in3"])
+        self.assertEqual("${ return inputs.in3}",
+                         cwl1["arguments"][1]["valueFrom"])
 
     def test_cleanup_inherit_metadata(self):
         """

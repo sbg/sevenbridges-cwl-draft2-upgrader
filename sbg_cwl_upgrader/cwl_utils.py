@@ -192,6 +192,21 @@ class CWL(object):
                 return False
 
     @staticmethod
+    def is_required_type(cwl1_type):
+        """
+        Check if input or output type is required
+        :param cwl1_type: CWL1 type - string or list
+        :return:
+        """
+        if isinstance(cwl1_type, str):
+            if cwl1_type.endswith('?') or cwl1_type == 'null':
+                return False
+        if isinstance(cwl1_type, list):
+            if 'null' in cwl1_type:
+                return False
+        return True
+
+    @staticmethod
     def is_array_input(sbg_draft2_input: dict):
         """
         Check if draft2 input is a list
