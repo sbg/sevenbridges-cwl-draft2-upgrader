@@ -61,6 +61,12 @@ sbg_cwl_upgrader -i admin/sbg-public-data/whole-exome-sequencing-bwa-gatk-4-0 -o
 ```
 You will additionally be asked if you want to decompose the workflow after installation. 
 
+### Save upgraded CWL in version v1.1
+Version of the upgraded app can be controlled with `-c` parameter
+```
+sbg_cwl_upgrader -i admin/sbg-public-data/whole-exome-sequencing-bwa-gatk-4-0 -c v1.1-o username/usernames-demo-project/wes
+```
+
 ### Decompose a Platform workflow
 Sometimes, you want all workflow components to be available in the same project as the workflow. This can be done using the `sbg_cwl_decomposer` tool.  
 This tool will:

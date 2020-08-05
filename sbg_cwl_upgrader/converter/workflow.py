@@ -11,6 +11,9 @@ from sbg_cwl_upgrader.converter.connection_checker import ConnectionChecker
 
 class CWLWorkflowConverter(CWL):
 
+    def __init__(self, cwl_version=None):
+        self.cwl_version = cwl_version
+
     @staticmethod
     def handle_source(source: list):
         source = deepcopy(source)
@@ -139,29 +142,29 @@ class CWLWorkflowConverter(CWL):
                 {'class': 'StepInputExpressionRequirement'}]
 
     def convert_dict(self, data: dict) -> dict:
-        v1_0_data = {k: deepcopy(v) for k, v in data.items()
+        v1_data = {k: deepcopy(v) for k, v in data.items()
                      if k not in ['x', 'y', 'appUrl']}
-        if v1_0_data.get('cwlVersion') != 'sbg:draft-2':
+        if v1_data.get('cwlVersion') != 'sbg:draft-2':
 
-            return v1_0_data
-        v1_0_data['cwlVersion'] = 'v1.0'
-        v1_0_data['sbg:appVersion'] = [v1_0_data['cwlVersion']]
-        v1_0_data['inputs'] = self.handle_inputs(v1_0_data['inputs'])
-        v1_0_data['outputs'] = self.handle_outputs(v1_0_data['outputs'])
-        v1_0_data['requirements'] = self.default_requirements()
-        if 'description' in v1_0_data:
-            v1_0_data['doc'] = deepcopy(v1_0_data['description'])
-            del v1_0_data['description']
-        for o in v1_0_data['outputs']:
+            return v1_data
+        v1_data['cwlVersion'] = self.cwl_version
+        v1_data['sbg:appVersion'] = [self.cwl_version]
+        v1_data['inputs'] = self.handle_inputs(v1_data['inputs'])
+        v1_data['outputs'] = self.handle_outputs(v1_data['outputs'])
+        v1_data['requirements'] = self.default_requirements()
+        if 'description' in v1_data:
+            v1_data['doc'] = deepcopy(v1_data['description'])
+            del v1_data['description']
+        for o in v1_data['outputs']:
             o['id'] = self.handle_id(o['id'])
             o['outputSource'] = self.handle_source(o['source'])
             del o['source']
-        if 'steps' in v1_0_data and isinstance(v1_0_data['steps'], list):
-            v1_0_data['steps'] = self.handle_steps(v1_0_data['steps'])
+        if 'steps' in v1_data and isinstance(v1_data['steps'], list):
+            v1_data['steps'] = self.handle_steps(v1_data['steps'])
         connection_checker = ConnectionChecker()
-        v1_0_data = connection_checker.fix_terminal_output_types(v1_0_data)
-        v1_0_data = connection_checker.fix_connection_matching(v1_0_data)
-        return v1_0_data
+        v1_data = connection_checker.fix_terminal_output_types(v1_data)
+        v1_data = connection_checker.fix_connection_matching(v1_data)
+        return v1_data
 
 
 def get_pool(pool=None):

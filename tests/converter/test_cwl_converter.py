@@ -31,6 +31,7 @@ class TestCWLConverter(TestCase):
                                'wes_cwl1.json'), 'r') as f:
             result = json.load(f)
         c = object.__new__(CWLConverterFacade)
+        c.cwl_version = 'v1.0'
         converted = c._parse(in_data)
         for cwl_key in ['hints', 'steps', 'inputs', 'outputs', 'requirements']:
             self.assertEqual(len(converted[cwl_key]),
