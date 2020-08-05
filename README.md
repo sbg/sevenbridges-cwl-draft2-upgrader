@@ -1,5 +1,9 @@
 # SevenBridges CWL Draft2 Upgrader (BETA)
 
+[![Travis](https://travis-ci.org/sbg/sevenbridges-cwl-draft2-upgrader.svg?branch=master)](https://travis-ci.org/sbg/sevenbridges-cwl-draft2-upgrader)
+[![PyPI version](https://badge.fury.io/py/sevenbridges-cwl-draft2-upgrader.svg)](https://pypi.python.org/pypi/sevenbridges-cwl-draft2-upgrader)
+
+
 SevenBridges CWL Draft2 Upgrader is a Python3 package that comes with three command line tools:
 - `sbg_cwl_upgrader`
 - `sbg_cwl_decomposer`
