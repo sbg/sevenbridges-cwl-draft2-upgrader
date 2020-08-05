@@ -10,7 +10,7 @@ SevenBridges CWL Draft2 Upgrader is a Python3 package that comes with three comm
 - `sbg_validate_js_cwl_v1`
 
 Command line tool `sbg_cwl_upgrader` allows you to upgrade CWL 
-tools and workflows written in sbg:draft-2 to CWL v1.0. The source CWL can be on your local machine or on the Seven Bridges platform and the
+tools and workflows written in sbg:draft-2 to CWL v1.0 or v1.1. The source CWL can be on your local machine or on the Seven Bridges platform and the
 converted CWL can be output to your local machine or onto the Seven Bridges platform. For more details see [this section](#recommended-draft2-to-cwl10-upgrade-flow).  
 Note that the conversion process is semi-automated, manual intervention may be required. For more details see the [known limitations section](#known-limitations).  
 Manual part of the conversion process may be tedious and require changes to the CWL code. Therefore, strong understanding of the CWL syntax is desirable.
@@ -50,7 +50,7 @@ For additional ways of providing authentication, please consult `sbg_cwl_upgrade
 
 ### Save upgraded CWL to a local file
 As an example, we'll take a publicly available workflow on the Seven Bridges platform, the
-GATK4 WES workflow, convert it to CWL1.0 and save it locally:
+GATK4 WES workflow, convert it to CWL v1.0 and save it locally:
 ```
 sbg_cwl_upgrader -i admin/sbg-public-data/whole-exome-sequencing-bwa-gatk-4-0 -o wes.cwl
 ```
@@ -66,9 +66,9 @@ sbg_cwl_upgrader -i admin/sbg-public-data/whole-exome-sequencing-bwa-gatk-4-0 -o
 You will additionally be asked if you want to decompose the workflow after installation. 
 
 ### Save upgraded CWL in version v1.1
-Version of the upgraded app can be controlled with `-c` parameter
+The CWL version of the upgraded app can be controlled with `-c` parameter:
 ```
-sbg_cwl_upgrader -i admin/sbg-public-data/whole-exome-sequencing-bwa-gatk-4-0 -c v1.1-o username/usernames-demo-project/wes
+sbg_cwl_upgrader -i admin/sbg-public-data/whole-exome-sequencing-bwa-gatk-4-0 -c v1.1 -o username/usernames-demo-project/wes
 ```
 
 ### Decompose a Platform workflow
