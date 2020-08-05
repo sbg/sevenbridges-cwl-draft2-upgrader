@@ -221,6 +221,10 @@ class Output(CWL):
 
 
 class CWLToolConverter(CWL):
+
+    def __init__(self, cwl_version=None):
+        self.cwl_version = cwl_version
+
     @staticmethod
     def _is_staged_file(sbg_draft2_input):
         if ('sbg:stageInput' in sbg_draft2_input
@@ -520,7 +524,7 @@ class CWLToolConverter(CWL):
     def convert_dict(self, data: dict):
         """Main method for converting draft2 tool to CWL1.0"""
 
-        # Just reuse if tool is already CWLv1.0
+        # Just reuse if tool is already CWLv1
         if data.get('cwlVersion') != 'sbg:draft-2':
             return data
 
@@ -535,8 +539,8 @@ class CWLToolConverter(CWL):
                                  'sbg:revision', 'sbg:revisionsInfo',
                                  'sbg:createdOn']}
 
-        new_data['cwlVersion'] = 'v1.0'
-        new_data['sbg:appVersion'] = ['v1.0']
+        new_data['cwlVersion'] = self.cwl_version
+        new_data['sbg:appVersion'] = [self.cwl_version]
         if 'stdin' in data:
             new_data['stdin'] = self._handle_stream(data['stdin'])
         if 'stdout' in data:

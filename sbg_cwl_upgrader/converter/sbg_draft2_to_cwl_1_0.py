@@ -4,27 +4,31 @@ from sbg_cwl_upgrader.sbg_utils import (add_sbg_auth_to_args,
                                         configure_logging,
                                         add_logging_to_args)
 from sbg_cwl_upgrader.converter.cwl_converter import CWLConverterFacade
+from sbg_cwl_upgrader.converter.cwl_converter import DEFAULT_CWL_VERSION
 
 
 def create_arg_parser():
     parser = argparse.ArgumentParser(
         description=' This tool converts CWL draft2 applications '
-                    '(workflows, command line tools) to CWL v1.0.')
+                    '(workflows, command line tools) to CWL v1.0 or v1.1')
 
     parser.add_argument('-i', '--input', required=True,
                         help='can be either draft2 file (YAML, JSON, CWL)'
                              ' path or application ID.')
     parser.add_argument('-o', '--output', required=True,
-                        help='can be either cwl v1.0 file (YAML, JSON, CWL)'
+                        help='can be either cwl v1 file (YAML, JSON, CWL)'
                              ' path or application ID.')
+    parser.add_argument('-c', '--cwl-version', default=DEFAULT_CWL_VERSION,
+                        choices=['v1.0', 'v1.1'],
+                        help='set cwl version for output')
     parser.add_argument('-r', '--revision', type=int,
                         help='platform application revision. default: latest')
     parser.add_argument('-v', '--validate', action='store_true',
-                        help='validate JS in the converted CWL v1.0 app.')
+                        help='validate JS in the converted CWL v1 app.')
     parser.add_argument('-u', '--update', dest='update', action='store_true',
                         help='update/install if output is a platform app.')
     parser.add_argument('-d', '--decompose', action='store_true',
-                        help='decompose the converted CWL v1.0 workflow.')
+                        help='decompose the converted CWL v1 workflow.')
 
     add_logging_to_args(parser)
     add_sbg_auth_to_args(parser)
@@ -48,6 +52,7 @@ def main(args=sys.argv[1:]):
                        app_revision=args['revision'],
                        input_=args['input'],
                        output=args['output'],
+                       cwl_version=args['cwl_version'],
                        validate=args['validate'],
                        update=args['update'],
                        decompose=args['decompose'])

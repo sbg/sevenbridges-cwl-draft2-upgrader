@@ -18,6 +18,7 @@ class TestArgParser(TestCase):
             endpoint=None,
             input_='a.cwl',
             output='b.cwl',
+            cwl_version='v1.0',
             platform='igor',
             profile='default',
             token=None,
@@ -30,13 +31,15 @@ class TestArgParser(TestCase):
         'sbg_cwl_upgrader.converter.sbg_draft2_to_cwl_1_0.CWLConverterFacade'
     )
     def test_shorthand_inputs(self, mock_facade):
-        main(['-i', 'a.cwl', '-o', 'b.cwl', '-u', '-d', '-v', '-r', '2'])
+        main(['-i', 'a.cwl', '-o', 'b.cwl', '-c', 'v1.1',
+              '-u', '-d', '-v', '-r', '2'])
         mock_facade.assert_called_once_with(
             app_revision=2,
             decompose=True,
             endpoint=None,
             input_='a.cwl',
             output='b.cwl',
+            cwl_version='v1.1',
             platform='igor',
             profile='default',
             token=None,

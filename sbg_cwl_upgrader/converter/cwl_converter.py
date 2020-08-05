@@ -20,6 +20,8 @@ from sbg_cwl_upgrader.converter.tool import CWLToolConverter
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_CWL_VERSION = 'v1.0'
+
 
 def dict_to_yaml(data: dict, out_path: str):
     y = YAML()
@@ -43,6 +45,7 @@ class CWLConverterFacade:
     def __init__(self,
                  input_: str,
                  output: str = None,
+                 cwl_version: str = 'v1.0',
                  token: str = None,
                  platform: str = None,
                  app_revision: str = None,
@@ -64,6 +67,7 @@ class CWLConverterFacade:
         self.username = None
         self.input_ = input_
         self.output = output
+        self.cwl_version = cwl_version
         self.validate = validate
         self.update = update
         self.decompose = decompose
@@ -235,12 +239,15 @@ class CWLConverterFacade:
 
         return raw
 
-    @staticmethod
-    def _parse(data):
+    def _parse(self, data):
         if 'class' in data and isinstance(data['class'], str):
             if data['class'] == 'CommandLineTool':
-                return CWLToolConverter().convert_dict(data)
+                return CWLToolConverter(
+                    cwl_version=self.cwl_version
+                ).convert_dict(data)
             elif data['class'] == 'Workflow':
-                return CWLWorkflowConverter().convert_dict(data)
+                return CWLWorkflowConverter(
+                    cwl_version=self.cwl_version
+                ).convert_dict(data)
         else:
             raise ValueError('Invalid cwl class.')
