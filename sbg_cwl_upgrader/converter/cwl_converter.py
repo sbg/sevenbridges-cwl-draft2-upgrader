@@ -20,8 +20,6 @@ from sbg_cwl_upgrader.converter.tool import CWLToolConverter
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_CWL_VERSION = 'v1.0'
-
 
 def dict_to_yaml(data: dict, out_path: str):
     y = YAML()

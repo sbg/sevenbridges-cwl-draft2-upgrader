@@ -8,6 +8,8 @@ import re
 import hashlib
 import json
 
+DEFAULT_CWL_VERSION = 'v1.0'
+
 
 class CWL(object):
     """

@@ -4,7 +4,7 @@ from sbg_cwl_upgrader.sbg_utils import (add_sbg_auth_to_args,
                                         configure_logging,
                                         add_logging_to_args)
 from sbg_cwl_upgrader.converter.cwl_converter import CWLConverterFacade
-from sbg_cwl_upgrader.converter.cwl_converter import DEFAULT_CWL_VERSION
+from sbg_cwl_upgrader.cwl_utils import DEFAULT_CWL_VERSION
 
 
 def create_arg_parser():
