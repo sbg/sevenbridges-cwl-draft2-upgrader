@@ -1,11 +1,11 @@
-setuptools==41.0.1
-sevenbridges-python==1.0.1
-humanfriendly==7.1.1
+setuptools==51.0.0
+sevenbridges-python==1.1.1
+humanfriendly==9.1
 termcolor==1.1.0
 typing==3.6.6
 tqdm==4.29.1
 avro_cwl==1.8.4
-cwltool==2.0.20200126090152
-jsbeautifier==1.8.9
+cwltool==3.0.20201203173111
+jsbeautifier==1.13.0
 billiard==3.5.0.5
 ruamel.yaml>=0.15.46,<=0.16.5
