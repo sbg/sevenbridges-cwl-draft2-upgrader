@@ -66,8 +66,8 @@ class TestCWLConverter(TestCase):
         stdout, _ = process.communicate()
         os.remove(v1_file)
 
-        self.assertEqual(process.returncode, 0)
         self.assertIn("foo foo", str(stdout))
+        self.assertEqual(process.returncode, 0)
 
     @patch('sys.stdout', new_callable=io.StringIO)
     def test_mini_tool(self, mock_stdout):
@@ -95,9 +95,9 @@ class TestCWLConverter(TestCase):
         stdout, _ = process.communicate()
         os.remove(v1_file)
 
-        self.assertEqual(process.returncode, 0)
         self.assertIn("1 1 1", str(stdout))
         self.assertIn("Converting done.", mock_stdout.getvalue())
+        self.assertEqual(process.returncode, 0)
 
     @patch('sys.stdout', new_callable=io.StringIO)
     def test_base_command_with_spaces(self, mock_stdout):
@@ -125,8 +125,8 @@ class TestCWLConverter(TestCase):
         stdout, _ = process.communicate()
         os.remove(v1_file)
 
-        self.assertEqual(process.returncode, 0)
         self.assertIn("A test string", str(stdout))
+        self.assertEqual(process.returncode, 0)
         self.assertIn("Converting done.", mock_stdout.getvalue())
 
     @patch('sys.stdout', MagicMock())
