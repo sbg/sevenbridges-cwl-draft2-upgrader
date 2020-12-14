@@ -3,7 +3,7 @@ from multiprocessing import cpu_count
 
 import tqdm
 from billiard.pool import Pool
-from sbg_cwl_upgrader.cwl_utils import CWL
+from sbg_cwl_upgrader.cwl_utils import CWL, DEFAULT_CWL_VERSION
 from sbg_cwl_upgrader.cwl_utils import as_list
 from sbg_cwl_upgrader.converter.tool import CWLToolConverter
 from sbg_cwl_upgrader.converter.connection_checker import ConnectionChecker
@@ -11,7 +11,7 @@ from sbg_cwl_upgrader.converter.connection_checker import ConnectionChecker
 
 class CWLWorkflowConverter(CWL):
 
-    def __init__(self, cwl_version=None):
+    def __init__(self, cwl_version=DEFAULT_CWL_VERSION):
         self.cwl_version = cwl_version
 
     @staticmethod
@@ -119,13 +119,12 @@ class CWLWorkflowConverter(CWL):
                           key=lambda x: x[step_index]))]
         return out
 
-    @staticmethod
-    def parse_step(data: dict, step_id: str):
+    def parse_step(self, data: dict, step_id: str):
         if 'class' in data and isinstance(data['class'], str):
             if data['class'] == 'CommandLineTool':
-                return CWLToolConverter().convert_dict(data)
+                return CWLToolConverter(cwl_version=self.cwl_version).convert_dict(data)
             elif data['class'] == 'Workflow':
-                return CWLWorkflowConverter().convert_dict(data)
+                return CWLWorkflowConverter(cwl_version=self.cwl_version).convert_dict(data)
             else:
                 raise ValueError(
                     'Invalid cwl class in step {}.'.format(step_id)

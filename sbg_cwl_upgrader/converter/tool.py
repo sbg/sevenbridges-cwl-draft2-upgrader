@@ -1,6 +1,6 @@
 import re
 from copy import deepcopy
-from sbg_cwl_upgrader.cwl_utils import CWL
+from sbg_cwl_upgrader.cwl_utils import CWL, DEFAULT_CWL_VERSION
 import os
 import sbg_cwl_upgrader
 from termcolor import colored
@@ -222,7 +222,7 @@ class Output(CWL):
 
 class CWLToolConverter(CWL):
 
-    def __init__(self, cwl_version=None):
+    def __init__(self, cwl_version=DEFAULT_CWL_VERSION):
         self.cwl_version = cwl_version
 
     @staticmethod
