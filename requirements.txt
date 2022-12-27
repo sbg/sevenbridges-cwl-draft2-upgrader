@@ -1,4 +1,4 @@
-setuptools==51.0.0
+setuptools==65.5.1
 sevenbridges-python==1.1.1
 humanfriendly==9.1
 termcolor==1.1.0
