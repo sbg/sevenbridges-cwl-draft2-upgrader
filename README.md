@@ -31,8 +31,10 @@ Python applications in [virtual environments][venv].
 The package can be installed with `pip`, using
 
 ```
+python3 -m pip install setuptools==51.0.0
 python3 -m pip install sevenbridges-cwl-draft2-upgrader
 ```
+Please note that the first command will install setuptools in version 51.0.0 first to support the use_2to3 used in the code. Newer releases of setuptools are not supporting use_2to3 anymore.
 
 ### Install from source code
 
